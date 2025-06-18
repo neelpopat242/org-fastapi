@@ -15,8 +15,10 @@ A FastAPI-based REST API for managing organizations and admin authentication wit
 ## Tech Stack
 
 - **FastAPI** 0.111.0 - Modern Python web framework
-- **Motor** 3.4.0 - Async MongoDB driver
+- **Motor** 3.3.2 - Async MongoDB driver (compatible version)
+- **PyMongo** 4.6.3 - MongoDB driver for Python
 - **Pydantic** v2 - Data validation and settings
+- **Pydantic-Settings** 2.2.1 - Configuration management
 - **Python-JOSE** - JWT token handling
 - **Passlib** with bcrypt - Password hashing
 - **Python-Slugify** - URL-friendly slug generation
@@ -85,10 +87,10 @@ A FastAPI-based REST API for managing organizations and admin authentication wit
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables**
+4. **Set up environment variables (Optional)**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edit .env with your configuration (optional - has defaults)
    ```
 
 5. **Start the server**
@@ -98,16 +100,39 @@ A FastAPI-based REST API for managing organizations and admin authentication wit
 
 The API will be available at `http://localhost:8000`
 
+## Docker Deployment (Recommended)
+
+The easiest way to run the application is using Docker:
+
+```bash
+# Clone and navigate to the project
+git clone <repository-url>
+cd organization-api
+
+# Run with Docker Compose (includes MongoDB)
+docker-compose up --build
+
+# Or run in detached mode
+docker-compose up --build -d
+```
+
+This will start:
+- **API Server**: `http://localhost:8000`
+- **MongoDB**: `localhost:27017`
+- **API Documentation**: `http://localhost:8000/docs`
+
 ## Environment Configuration
 
-Create a `.env` file with the following variables:
+The application includes fallback defaults for all configuration values, so it can run without a `.env` file. However, for production use, create a `.env` file with:
 
 ```bash
 MONGO_URI=mongodb://localhost:27017
 MONGO_DB_NAME=org_service
-JWT_SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-secret-key-here-32-characters-long
 ACCESS_TOKEN_EXPIRE_MINUTES=15
 ```
+
+**Note:** The JWT secret key should be at least 32 characters long for security.
 
 ## API Endpoints
 
@@ -195,37 +220,43 @@ Once the server is running, visit:
 
 ### Running in Development Mode
 
+**Option 1: Local Python (requires MongoDB separately)**
 ```bash
+# Install MongoDB locally first
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Code Style
+**Option 2: Docker Development (recommended)**
+```bash
+docker-compose up --build
+```
 
-This project follows PEP 8 guidelines. Consider using:
+### Stopping Services
 
-- `black` for code formatting
-- `flake8` for linting
-- `mypy` for type checking
+```bash
+# Stop Docker services
+docker-compose down
 
-## Security Considerations
+# Stop and remove volumes (removes database data)
+docker-compose down -v
+```
 
-- JWT tokens expire in 15 minutes (configurable)
-- Passwords are hashed using bcrypt
-- Environment variables for sensitive configuration
-- Input validation with Pydantic models
+### Viewing Logs
 
-## Contributing
+```bash
+# View API logs
+docker-compose logs api
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+# View MongoDB logs
+docker-compose logs mongodb
 
-## License
+# Follow logs in real-time
+docker-compose logs -f api
+```
 
-This project is licensed under the MIT License.
 
-## Support
 
-For questions and support, please open an issue in the repository. 
+
+
+
+
