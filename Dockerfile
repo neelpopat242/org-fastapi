@@ -11,8 +11,8 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        build-essential \
-        curl \
+    build-essential \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 # Copy project
 COPY ./app /app/app
-COPY .env.example /app/.env
+COPY .env /app/local.env
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser \

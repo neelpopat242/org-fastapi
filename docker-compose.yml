@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   api:
     build: .
     ports:
       - "8000:8000"
     environment:
-      - MONGO_URI=mongodb://mongodb:27017
-      - MONGO_DB_NAME=org_service
-      - JWT_SECRET_KEY=your-secret-key-change-in-production
-      - ACCESS_TOKEN_EXPIRE_MINUTES=15
+      MONGO_URI: mongodb://mongodb:27017
+      MONGO_DB_NAME: org_service
+      JWT_SECRET_KEY: your-secret-key-change-in-production-32-chars-long
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
     depends_on:
       - mongodb
     networks:
@@ -29,6 +27,7 @@ services:
 volumes:
   mongodb_data:
 
+
 networks:
   app-network:
-    driver: bridge 
+    driver: bridge
